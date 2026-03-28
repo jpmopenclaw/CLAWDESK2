@@ -326,7 +326,8 @@
                     <RadioButton x:Name="NavChat" Style="{StaticResource NavButton}" Content="💬 對話" IsChecked="True" Checked="NavChat_Checked"/>
                     <RadioButton x:Name="NavSettings" Style="{StaticResource NavButton}" Content="⚙️ 設定" Checked="NavSettings_Checked"/>
                     <RadioButton x:Name="NavFiles" Style="{StaticResource NavButton}" Content="📁 檔案" Checked="NavFiles_Checked"/>
-                    <RadioButton x:Name="NavCommands" Style="{StaticResource NavButton}" Content="⚡ 指令" Checked="NavCommands_Checked"/>
+                    <RadioButton x:Name="NavCron" Style="{StaticResource NavButton}" Content="排程任務" Checked="NavCron_Checked"/>
+                    <RadioButton x:Name="NavCommands" Style="{StaticResource NavButton}" Content="系統終端" Checked="NavCommands_Checked"/>
                     
                     <!-- 主題切換 -->
                     <Border Margin="8,20,8,4" Padding="8" Background="#F1F5F9" CornerRadius="8">
@@ -581,6 +582,60 @@
                 </Grid>
 
                 <!-- ==================== 指令視圖 ==================== -->
+                                <!-- ==================== Cron Schedule View ==================== -->
+                <Grid x:Name="CronView" Visibility="Collapsed" DataContext="{Binding Cron}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    
+                    <Border Grid.Row="0" Background="White" Padding="24,20" VerticalAlignment="Top">
+                        <Border.Effect>
+                            <DropShadowEffect Color="#000000" BlurRadius="8" ShadowDepth="1" Opacity="0.04"/>
+                        </Border.Effect>
+                        <Grid>
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="排程任務管理" FontSize="20" FontWeight="SemiBold" Foreground="#1E293B"/>
+                                <TextBlock Text="自動執行背景任務 (Cron)" FontSize="13" Foreground="#64748B" Margin="0,4,0,0"/>
+                            </StackPanel>
+                            <Button Grid.Column="1" Content="+ 新增任務" Style="{StaticResource PrimaryButton}" Command="{Binding AddJobCommand}" HorizontalAlignment="Right" Margin="10,0"/>
+                        </Grid>
+                    </Border>
+                    
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="24">
+                        <ItemsControl ItemsSource="{Binding Jobs}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            
+                                            <CheckBox IsChecked="{Binding IsEnabled}" VerticalAlignment="Center" Margin="0,0,16,0">
+                                                <CheckBox.LayoutTransform>
+                                                    <ScaleTransform ScaleX="1.2" ScaleY="1.2"/>
+                                                </CheckBox.LayoutTransform>
+                                            </CheckBox>
+                                            
+                                            <StackPanel Grid.Column="1">
+                                                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="16" Foreground="#1E293B"/>
+                                                <TextBlock Text="{Binding Command}" Foreground="#64748B" Margin="0,4,0,0"/>
+                                                <TextBlock Text="{Binding Schedule}" FontFamily="Consolas" Foreground="#2563EB" Margin="0,4,0,0"/>
+                                            </StackPanel>
+                                            
+                                            <Button Grid.Column="2" Content="編輯" Style="{StaticResource SecondaryButton}" VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
+
                 <Grid x:Name="CommandsView" Visibility="Collapsed">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>

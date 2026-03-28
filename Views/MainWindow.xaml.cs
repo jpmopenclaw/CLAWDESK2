@@ -149,6 +149,11 @@ namespace CLAWDESK.Views
             ShowView(FilesView);
         }
 
+                private void NavCron_Checked(object sender, RoutedEventArgs e)
+        {
+            ShowView(CronView);
+        }
+
         private void NavCommands_Checked(object sender, RoutedEventArgs e)
         {
             ShowView(CommandsView);
@@ -159,6 +164,7 @@ namespace CLAWDESK.Views
             if (viewToShow == null) return;
 
             ChatView.Visibility = Visibility.Collapsed;
+            CronView.Visibility = Visibility.Collapsed;
             SettingsView.Visibility = Visibility.Collapsed;
             FilesView.Visibility = Visibility.Collapsed;
             CommandsView.Visibility = Visibility.Collapsed;
@@ -402,6 +408,7 @@ namespace CLAWDESK.Views
                 
                 // 設定頁面
                 SettingsView.Background = darkBg;
+                CronView.Background = darkBg;
                 
                 // 檔案頁面
                 FilesView.Background = darkBg;
@@ -443,6 +450,7 @@ namespace CLAWDESK.Views
                 ChatInput.BorderBrush = lightBorder;
                 
                 SettingsView.Background = lightBg;
+                CronView.Background = lightBg;
                 FilesView.Background = lightBg;
                 if (FileList != null) FileList.Background = whiteBg;
                 if (FileContentBox != null) { FileContentBox.Background = whiteBg; FileContentBox.Foreground = lightText; }
