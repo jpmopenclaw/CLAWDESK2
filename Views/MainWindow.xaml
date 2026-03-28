@@ -411,7 +411,7 @@
                                             </Style>
                                         </Border.Style>
                                         <StackPanel>
-                                            <mdxaml:MarkdownScrollViewer Markdown="{Binding Content}" Foreground="#1E293B" DocumentMargin="0">
+                                            <mdxaml:MarkdownScrollViewer Markdown="{Binding Content}" Foreground="#1E293B" Margin="0">
                                                 <mdxaml:MarkdownScrollViewer.Style>
                                                     <Style TargetType="mdxaml:MarkdownScrollViewer">
                                                         <Style.Triggers>
