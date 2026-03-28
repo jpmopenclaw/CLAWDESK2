@@ -1,0 +1,19 @@
+<Application x:Class="CLAWDESK.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             StartupUri="Views/MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <!-- 全域字體 -->
+            <FontFamily x:Key="DefaultFont">Microsoft JhengHei UI</FontFamily>
+            
+            <!-- 顏色定義 -->
+            <SolidColorBrush x:Key="PrimaryColor" Color="#2563EB"/>
+            <SolidColorBrush x:Key="BackgroundColor" Color="#1E1E1E"/>
+            <SolidColorBrush x:Key="SidebarColor" Color="#111827"/>
+            <SolidColorBrush x:Key="CardColor" Color="#374151"/>
+            <SolidColorBrush x:Key="TextPrimary" Color="#FFFFFF"/>
+            <SolidColorBrush x:Key="TextSecondary" Color="#9CA3AF"/>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

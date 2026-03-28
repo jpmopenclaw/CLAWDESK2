@@ -1,0 +1,638 @@
+<Window x:Class="CLAWDESK.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="CLAWDESK - 桌面控制中心"
+        Height="700" Width="1000"
+        MinHeight="500" MinWidth="800"
+        WindowStartupLocation="CenterScreen"
+        Background="#F8FAFC">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+        
+        <!-- ==================== Glassmorphism 風格 ==================== -->
+        
+        <!-- 主按鈕樣式 (Primary Button) -->
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="Background" Value="#2563EB"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="20,12"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" 
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="12"
+                                Padding="{TemplateBinding Padding}">
+                            <Border.Effect>
+                                <DropShadowEffect Color="#2563EB" BlurRadius="8" ShadowDepth="2" Opacity="0.3"/>
+                            </Border.Effect>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#1D4ED8"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#1E40AF"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="#94A3B8"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- 次要按鈕樣式 (Secondary Button) -->
+        <Style x:Key="SecondaryButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#1E293B"/>
+            <Setter Property="Padding" Value="16,10"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#E2E8F0"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" 
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#F1F5F9"/>
+                    <Setter Property="BorderBrush" Value="#CBD5E1"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#E2E8F0"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- 側邊欄導航按鈕 -->
+        <Style x:Key="NavButton" TargetType="RadioButton">
+            <Setter Property="Foreground" Value="#64748B"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="20,16"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="border" 
+                                Background="{TemplateBinding Background}" 
+                                Padding="{TemplateBinding Padding}"
+                                CornerRadius="12"
+                                Margin="8,4">
+                            <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#F1F5F9" TargetName="border"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Background" Value="#2563EB" TargetName="border"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- 文字輸入框樣式 (Input Box) -->
+        <Style x:Key="InputBox" TargetType="TextBox">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="#1E293B"/>
+            <Setter Property="BorderBrush" Value="#E2E8F0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="16,14"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="CaretBrush" Value="#2563EB"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10"
+                                Padding="{TemplateBinding Padding}">
+                            <ScrollViewer x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="BorderBrush" Value="#2563EB" TargetName="border"/>
+                                <Setter Property="BorderThickness" Value="2" TargetName="border"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- 密碼輸入框樣式 -->
+        <Style x:Key="PasswordBox" TargetType="PasswordBox">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="#1E293B"/>
+            <Setter Property="BorderBrush" Value="#E2E8F0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="16,14"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="CaretBrush" Value="#2563EB"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="PasswordBox">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10"
+                                Padding="{TemplateBinding Padding}">
+                            <ScrollViewer x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="BorderBrush" Value="#2563EB" TargetName="border"/>
+                                <Setter Property="BorderThickness" Value="2" TargetName="border"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- 下拉選單樣式 -->
+        <Style x:Key="ComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="#1E293B"/>
+            <Setter Property="BorderBrush" Value="#E2E8F0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="16,12"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton x:Name="ToggleButton"
+                                          BorderBrush="#E2E8F0"
+                                          BorderThickness="1"
+                                          Background="White"
+                                          Focusable="False"
+                                          IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                          ClickMode="Press">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border x:Name="Border" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="10">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="32"/>
+                                                </Grid.ColumnDefinitions>
+                                                <ContentPresenter Grid.Column="0" Margin="16,0,0,0" VerticalAlignment="Center"/>
+                                                <Path Grid.Column="1" Fill="#64748B" HorizontalAlignment="Center" VerticalAlignment="Center" Data="M 0 0 L 6 6 L 12 0 Z"/>
+                                            </Grid>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Setter Property="BorderBrush" Value="#2563EB" TargetName="Border"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                            <ContentPresenter x:Name="ContentSite" IsHitTestVisible="False" Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" Margin="16,12,32,12" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            <Popup x:Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True" Focusable="False" PopupAnimation="Slide">
+                                <Grid x:Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <Border x:Name="DropDownBorder" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="10" Margin="0,4,0,0">
+                                        <Border.Effect>
+                                            <DropShadowEffect Color="#000000" BlurRadius="16" ShadowDepth="4" Opacity="0.1"/>
+                                        </Border.Effect>
+                                        <ScrollViewer Margin="4" SnapsToDevicePixels="True">
+                                            <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                        </ScrollViewer>
+                                    </Border>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- 下拉選單選項樣式 -->
+        <Style TargetType="ComboBoxItem">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#1E293B"/>
+            <Setter Property="Padding" Value="16,12"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border x:Name="Border" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#F1F5F9" TargetName="Border"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="#EFF6FF" TargetName="Border"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- 卡片樣式 (Card) -->
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="16"/>
+            <Setter Property="Padding" Value="20"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="#000000" BlurRadius="12" ShadowDepth="2" Opacity="0.06"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- 訊息氣泡 - 使用者 -->
+        <Style x:Key="UserMessageStyle" TargetType="Border">
+            <Setter Property="Background" Value="#2563EB"/>
+            <Setter Property="CornerRadius" Value="16,16,4,16"/>
+            <Setter Property="Padding" Value="16,12"/>
+            <Setter Property="MaxWidth" Value="500"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="Margin" Value="8"/>
+        </Style>
+
+        <!-- 訊息氣泡 - AI -->
+        <Style x:Key="AIMessageStyle" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="16,16,16,4"/>
+            <Setter Property="Padding" Value="16,12"/>
+            <Setter Property="MaxWidth" Value="500"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Margin" Value="8"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="#000000" BlurRadius="8" ShadowDepth="1" Opacity="0.05"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="240"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- ==================== 側邊欄 ==================== -->
+        <Border Grid.Column="0" Grid.Row="0" Background="White">
+            <DockPanel>
+                <!-- Logo / 標題區域 -->
+                <StackPanel DockPanel.Dock="Top" Margin="24,28,24,40">
+                    <!-- Logo 圖示 -->
+                    <Border Width="56" Height="56" CornerRadius="16" Background="#2563EB" Margin="0,0,0,16">
+                        <TextBlock Text="🦞" FontSize="28" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <TextBlock Text="CLAWDESK" FontSize="22" FontWeight="Bold" Foreground="#1E293B"/>
+                    <TextBlock Text="桌面控制中心" FontSize="13" Foreground="#64748B" Margin="0,4,0,0"/>
+                </StackPanel>
+
+                <!-- 導航選單 -->
+                <StackPanel Margin="12,0">
+                    <RadioButton x:Name="NavChat" Style="{StaticResource NavButton}" Content="💬 對話" IsChecked="True" Checked="NavChat_Checked"/>
+                    <RadioButton x:Name="NavSettings" Style="{StaticResource NavButton}" Content="⚙️ 設定" Checked="NavSettings_Checked"/>
+                    <RadioButton x:Name="NavFiles" Style="{StaticResource NavButton}" Content="📁 檔案" Checked="NavFiles_Checked"/>
+                    <RadioButton x:Name="NavCommands" Style="{StaticResource NavButton}" Content="⚡ 指令" Checked="NavCommands_Checked"/>
+                    
+                    <!-- 主題切換 -->
+                    <Border Margin="8,20,8,4" Padding="8" Background="#F1F5F9" CornerRadius="8">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBlock x:Name="LightThemeIcon" Text="☀️" FontSize="16" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <ToggleButton x:Name="ThemeToggle" Width="44" Height="24" 
+                                          Click="ThemeToggle_Click" Cursor="Hand">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border x:Name="track" Background="#CBD5E1" CornerRadius="12" Padding="2">
+                                            <Ellipse x:Name="thumb" Width="20" Height="20" Fill="White">
+                                                <Ellipse.Effect>
+                                                    <DropShadowEffect Color="#000000" BlurRadius="4" ShadowDepth="1" Opacity="0.2"/>
+                                                </Ellipse.Effect>
+                                            </Ellipse>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Setter Property="Background" Value="#2563EB" TargetName="track"/>
+                                                <Setter Property="HorizontalAlignment" Value="Right" TargetName="thumb"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                            <TextBlock x:Name="DarkThemeIcon" Text="🌙" FontSize="16" VerticalAlignment="Center" Margin="8,0,0,0" Opacity="0.5"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <!-- ==================== 主內容區域 ==================== -->
+        <Border Grid.Column="1" Grid.Row="0" Background="#F8FAFC">
+            <Grid x:Name="ContentArea">
+                
+                <!-- ==================== 對話視圖 ==================== -->
+                <Grid x:Name="ChatView" Visibility="Visible">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- 標題列 -->
+                    <Border Grid.Row="0" Background="White" Padding="24,20" VerticalAlignment="Top">
+                        <Border.Effect>
+                            <DropShadowEffect Color="#000000" BlurRadius="8" ShadowDepth="1" Opacity="0.04"/>
+                        </Border.Effect>
+                        <StackPanel>
+                            <TextBlock Text="💬 對話" FontSize="20" FontWeight="SemiBold" Foreground="#1E293B"/>
+                            <TextBlock Text="與 AI 助手互動" FontSize="13" Foreground="#64748B" Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 訊息列表 (含標題列空間) -->
+                    <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" Padding="24,100,24,20">
+                        <ItemsControl x:Name="MessagesList">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Margin="0,6">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Background" Value="White"/>
+                                                <Setter Property="CornerRadius" Value="16,16,16,4"/>
+                                                <Setter Property="Padding" Value="16,12"/>
+                                                <Setter Property="MaxWidth" Value="500"/>
+                                                <Setter Property="HorizontalAlignment" Value="Left"/>
+                                                <Setter Property="Effect">
+                                                    <Setter.Value>
+                                                        <DropShadowEffect Color="#000000" BlurRadius="8" ShadowDepth="1" Opacity="0.05"/>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsUser}" Value="True">
+                                                        <Setter Property="Background" Value="#2563EB"/>
+                                                        <Setter Property="CornerRadius" Value="16,16,4,16"/>
+                                                        <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                        <Setter Property="Effect" Value="{x:Null}"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Content}" TextWrapping="Wrap" FontSize="14" Foreground="#1E293B">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsUser}" Value="True">
+                                                                <Setter Property="Foreground" Value="White"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                            <TextBlock Text="{Binding Timestamp, StringFormat='{}{0:HH:mm}'}" 
+                                                       FontSize="11" Margin="0,8,0,0">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Foreground" Value="#94A3B8"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsUser}" Value="True">
+                                                                <Setter Property="Foreground" Value="#BFDBFE"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+
+                    <!-- 輸入區域 -->
+                    <Border Grid.Row="1" Background="White" Padding="24,20">
+                        <Border.Effect>
+                            <DropShadowEffect Color="#000000" BlurRadius="12" ShadowDepth="-2" Opacity="0.06"/>
+                        </Border.Effect>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBox x:Name="ChatInput" Style="{StaticResource InputBox}" 
+                                     KeyDown="ChatInput_KeyDown"
+                                     AcceptsReturn="False"/>
+                            
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="16,0,0,0">
+                                <Button x:Name="SendButton" Content="送出" Style="{StaticResource PrimaryButton}" Click="SendButton_Click"/>
+                                <Button x:Name="ClearButton" Content="清除" Style="{StaticResource SecondaryButton}" 
+                                        Click="ClearButton_Click" Margin="12,0,0,0"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <!-- ==================== 設定視圖 ==================== -->
+                <Grid x:Name="SettingsView" Visibility="Collapsed">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="40">
+                        <StackPanel MaxWidth="600">
+                            <TextBlock Text="⚙️ 設定" FontSize="28" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,8"/>
+                            <TextBlock Text="配置您的 AI 連線設定" FontSize="14" Foreground="#64748B" Margin="0,0,0,32"/>
+
+                            <!-- 卡片容器 -->
+                            <Border Style="{StaticResource CardStyle}" Margin="0,0,0,20">
+                                <StackPanel>
+                                    <TextBlock Text="模型設定" FontSize="18" FontWeight="SemiBold" Foreground="#1E293B" Margin="0,0,0,20"/>
+                                    
+                                    <!-- Provider -->
+                                    <TextBlock Text="Provider" Foreground="#64748B" FontSize="13" Margin="0,0,0,8"/>
+                                    <ComboBox x:Name="ProviderCombo" Style="{StaticResource ComboBoxStyle}" Margin="0,0,0,20">
+                                        <ComboBoxItem Content="OpenAI" IsSelected="True"/>
+                                        <ComboBoxItem Content="Anthropic"/>
+                                        <ComboBoxItem Content="Google"/>
+                                        <ComboBoxItem Content="MiniMax"/>
+                                        <ComboBoxItem Content="Azure OpenAI"/>
+                                    </ComboBox>
+
+                                    <!-- API Token -->
+                                    <TextBlock Text="Gateway Token" Foreground="#64748B" FontSize="13" Margin="0,0,0,8"/>
+                                    <Grid Margin="0,0,0,20">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <PasswordBox x:Name="ApiTokenBox" Style="{StaticResource PasswordBox}"/>
+                                        <Button Grid.Column="1" Content="👁" Style="{StaticResource SecondaryButton}" 
+                                                Click="ToggleApiToken_Click" Margin="8,0,0,0" Width="48"/>
+                                    </Grid>
+
+                                    <!-- Default Model -->
+                                    <TextBlock Text="Model" Foreground="#64748B" FontSize="13" Margin="0,0,0,8"/>
+                                    <ComboBox x:Name="ModelCombo" Style="{StaticResource ComboBoxStyle}" Margin="0,0,0,20"/>
+
+                                    <!-- Gateway URL -->
+                                    <TextBlock Text="Gateway URL" Foreground="#64748B" FontSize="13" Margin="0,0,0,8"/>
+                                    <TextBox x:Name="GatewayUrlBox" Style="{StaticResource InputBox}"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- 操作按鈕 -->
+                            <StackPanel Orientation="Horizontal">
+                                <Button x:Name="SaveSettingsButton" Content="💾 儲存設定" Style="{StaticResource PrimaryButton}" Click="SaveSettings_Click"/>
+                                <Button x:Name="TestConnectionButton" Content="🔗 測試連線" Style="{StaticResource SecondaryButton}" 
+                                        Click="TestConnection_Click" Margin="16,0,0,0"/>
+                            </StackPanel>
+
+                            <TextBlock x:Name="TestResultText" Foreground="#64748B" Margin="0,16,0,0" FontSize="13"/>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+
+                <!-- ==================== 檔案視圖 ==================== -->
+                <Grid x:Name="FilesView" Visibility="Collapsed">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="320"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- 檔案列表側邊欄 -->
+                    <Border Grid.Column="0" Background="White">
+                        <DockPanel>
+                            <!-- 工具列 -->
+                            <Border DockPanel.Dock="Top" Padding="16" BorderBrush="#F1F5F9" BorderThickness="0,0,0,1">
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Content="⬆️ 上一層" Style="{StaticResource SecondaryButton}" Click="GoBack_Click"/>
+                                    <Button Content="🔄 重新整理" Style="{StaticResource SecondaryButton}" 
+                                            Click="RefreshFiles_Click" Margin="8,0,0,0"/>
+                                </StackPanel>
+                            </Border>
+                            
+                            <!-- 檔案列表 -->
+                            <ListBox x:Name="FileList" Background="Transparent" BorderThickness="0" 
+                                     SelectionChanged="FileList_SelectionChanged" Padding="8">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" Margin="8,6">
+                                            <TextBlock Text="📁" Margin="0,0,10,0" FontSize="16">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Text" Value="📄"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsDirectory}" Value="True">
+                                                                <Setter Property="Text" Value="📁"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                            <TextBlock Text="{Binding Name}" Foreground="#1E293B" FontSize="14" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </DockPanel>
+                    </Border>
+
+                    <!-- 檔案內容預覽 -->
+                    <Border Grid.Column="1" Background="#F8FAFC">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="24">
+                            <TextBox x:Name="FileContentBox" IsReadOnly="True" TextWrapping="Wrap" 
+                                     Background="White" Foreground="#1E293B" BorderThickness="0"
+                                     FontFamily="Consolas" FontSize="13" Padding="20">
+                                <TextBox.Effect>
+                                    <DropShadowEffect Color="#000000" BlurRadius="8" ShadowDepth="1" Opacity="0.04"/>
+                                </TextBox.Effect>
+                            </TextBox>
+                        </ScrollViewer>
+                    </Border>
+                </Grid>
+
+                <!-- ==================== 指令視圖 ==================== -->
+                <Grid x:Name="CommandsView" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- 快速指令區 -->
+                    <Border Grid.Row="0" Background="White" Padding="24,20">
+                        <StackPanel>
+                            <TextBlock Text="⚡ 快速指令" FontSize="18" FontWeight="SemiBold" Foreground="#1E293B" Margin="0,0,0,16"/>
+                            <WrapPanel>
+                                <Button Content="/status" Style="{StaticResource SecondaryButton}" Click="QuickCommand_Click" Margin="0,0,8,8" Padding="16,10"/>
+                                <Button Content="/help" Style="{StaticResource SecondaryButton}" Click="QuickCommand_Click" Margin="0,0,8,8" Padding="16,10"/>
+                                <Button Content="/memory" Style="{StaticResource SecondaryButton}" Click="QuickCommand_Click" Margin="0,0,8,8" Padding="16,10"/>
+                                <Button Content="/models" Style="{StaticResource SecondaryButton}" Click="QuickCommand_Click" Margin="0,0,8,8" Padding="16,10"/>
+                            </WrapPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 指令輸入與輸出 -->
+                    <Grid Grid.Row="1" Margin="24,20">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBox x:Name="CommandInputBox" Style="{StaticResource InputBox}" 
+                                 KeyDown="CommandInput_KeyDown" Margin="0,0,0,16"/>
+                        
+                        <Border Grid.Row="1" Background="White" CornerRadius="16" Padding="20">
+                            <Border.Effect>
+                                <DropShadowEffect Color="#000000" BlurRadius="8" ShadowDepth="1" Opacity="0.04"/>
+                            </Border.Effect>
+                            <TextBox x:Name="CommandOutput" IsReadOnly="True" TextWrapping="Wrap"
+                                     Background="Transparent" Foreground="#1E293B" BorderThickness="0"
+                                     FontFamily="Consolas" FontSize="13"/>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <!-- ==================== 底部狀態列 ==================== -->
+        <Border Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Background="White" Padding="24,12" BorderBrush="#F1F5F9" BorderThickness="0,1,0,0">
+            <Grid>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock x:Name="StatusText" Text="🦞 就緒" Foreground="#64748B" FontSize="13"/>
+                    <TextBlock Text=" · " Foreground="#CBD5E1"/>
+                    <TextBlock Text="已連接到 Gateway" Foreground="#64748B" FontSize="13"/>
+                </StackPanel>
+                <TextBlock x:Name="VersionText" Text="v2.0" Foreground="#94A3B8" FontSize="13" HorizontalAlignment="Right"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
