@@ -84,8 +84,9 @@ namespace CLAWDESK.Services
             }
             catch (Exception ex)
             {
-                return $"[錯誤] {ex.Message}";
+                return $"[Error] {ex.Message}";
             }
+        }
 
         public async Task<bool> WriteFileContentAsync(string filePath, string content)
         {
