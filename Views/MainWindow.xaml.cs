@@ -158,12 +158,36 @@ namespace CLAWDESK.Views
         {
             if (viewToShow == null) return;
 
-            ChatView.Visibility = Visibility.Collapsed;
-            SettingsView.Visibility = Visibility.Collapsed;
-            FilesView.Visibility = Visibility.Collapsed;
-            CommandsView.Visibility = Visibility.Collapsed;
+            var views = new UIElement[] { ChatView, SettingsView, FilesView, CommandsView };
+            
+            foreach (var view in views)
+            {
+                if (view != viewToShow && view.Visibility == Visibility.Visible)
+                {
+                    var fadeOut = new System.Windows.Media.Animation.DoubleAnimation(0, TimeSpan.FromMilliseconds(150));
+                    var currentView = view;
+                    fadeOut.Completed += (s, e) => {
+                        currentView.Visibility = Visibility.Collapsed;
+                        currentView.BeginAnimation(UIElement.OpacityProperty, null);
+                    };
+                    currentView.BeginAnimation(UIElement.OpacityProperty, fadeOut);
+                }
+            }
 
-            viewToShow.Visibility = Visibility.Visible;
+            if (viewToShow.Visibility != Visibility.Visible)
+            {
+                viewToShow.Opacity = 0;
+                viewToShow.Visibility = Visibility.Visible;
+                
+                var fadeIn = new System.Windows.Media.Animation.DoubleAnimation(1, TimeSpan.FromMilliseconds(250));
+                var slideUp = new System.Windows.Media.Animation.ThicknessAnimation(new Thickness(0, 20, 0, -20), new Thickness(0), TimeSpan.FromMilliseconds(250))
+                {
+                    DecelerationRatio = 0.9
+                };
+                
+                viewToShow.BeginAnimation(UIElement.OpacityProperty, fadeIn);
+                viewToShow.BeginAnimation(FrameworkElement.MarginProperty, slideUp);
+            }
         }
 
         #endregion
