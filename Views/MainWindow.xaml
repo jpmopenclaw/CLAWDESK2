@@ -537,6 +537,7 @@
                                     <Button Content="⬆️ 上一層" Style="{StaticResource SecondaryButton}" Click="GoBack_Click"/>
                                     <Button Content="🔄 重新整理" Style="{StaticResource SecondaryButton}" 
                                             Click="RefreshFiles_Click" Margin="8,0,0,0"/>
+                                    <Button Content="Save" Style="{StaticResource PrimaryButton}" Click="SaveFile_Click" Margin="8,0,0,0"/>
                                 </StackPanel>
                             </Border>
                             
@@ -569,7 +570,7 @@
                     <!-- 檔案內容預覽 -->
                     <Border Grid.Column="1" Background="#F8FAFC">
                         <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="24">
-                            <TextBox x:Name="FileContentBox" IsReadOnly="True" TextWrapping="Wrap" 
+                            <TextBox x:Name="FileContentBox" IsReadOnly="False" TextWrapping="Wrap" 
                                      Background="White" Foreground="#1E293B" BorderThickness="0"
                                      FontFamily="Consolas" FontSize="13" Padding="20">
                                 <TextBox.Effect>

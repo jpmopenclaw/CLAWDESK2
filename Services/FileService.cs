@@ -86,6 +86,18 @@ namespace CLAWDESK.Services
             {
                 return $"[錯誤] {ex.Message}";
             }
+
+        public async Task<bool> WriteFileContentAsync(string filePath, string content)
+        {
+            try
+            {
+                await System.IO.File.WriteAllTextAsync(filePath, content);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

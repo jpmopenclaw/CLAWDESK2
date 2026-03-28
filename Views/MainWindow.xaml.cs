@@ -10,6 +10,7 @@ namespace CLAWDESK.Views
 {
     public partial class MainWindow : Window
     {
+        private string? _currentFilePath;
         private readonly MainViewModel? _viewModel;
         private readonly ConfigService _configService;
         private readonly OpenClawService _openClawService;
@@ -316,6 +317,8 @@ namespace CLAWDESK.Views
                 {
                     var content = await _fileService.ReadFileContentAsync(file.FullPath);
                     FileContentBox.Text = content;
+                    _currentFilePath = file.FullPath;
+                    _currentFilePath = file.FullPath;
                 }
             }
         }
@@ -323,6 +326,26 @@ namespace CLAWDESK.Views
         #endregion
 
         #region 指令
+
+        
+        private async void SaveFile_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(_currentFilePath))
+            {
+                MessageBox.Show("No file selected to save.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var success = await _fileService.WriteFileContentAsync(_currentFilePath, FileContentBox.Text);
+            if (success)
+            {
+                MessageBox.Show("File saved successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("Failed to save file.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
 
         private void CommandInput_KeyDown(object sender, KeyEventArgs e)
         {
